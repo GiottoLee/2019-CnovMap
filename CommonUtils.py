@@ -12,3 +12,8 @@ def getId():
 def getDate():
     date = time.strftime("%Y-%m-%d", time.localtime())
     return date
+
+
+def printHeartbeat():
+    heartbeat = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    print(heartbeat + "---Alive")

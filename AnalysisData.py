@@ -114,6 +114,11 @@ def printData(data):
             print("死亡率：" + str(country['total']['deadRate']))
             print("治愈率：" + str(country['total']['healRate']))
 
+def printCurrentUpdateTime(data):
+
+    print(data['lastUpdateTime'])
+
+
 
 def uploadData(data):
     currentUpdateTime = data['lastUpdateTime']
@@ -128,7 +133,6 @@ def uploadData(data):
                    'where updateTime = %s',
                    currentUpdateTime)
     ifUpdate = str(cursor.fetchone())
-    print(ifUpdate)
 
     # 若数据有更新
     if ifUpdate == 'None':
