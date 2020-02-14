@@ -12,13 +12,16 @@ if __name__ == '__main__':
 
     data = catchData(url)
 
-    schedule.every(10).minutes.do(uploadData, data=data)
-    schedule.every(10).minutes.do(printData, data=data)
-    schedule.every(1).minutes.do(printHeartbeat)
+    # schedule.every(10).minutes.do(uploadData, data=data)
+    # schedule.every(10).minutes.do(printData, data=data)
+    # schedule.every(1).minutes.do(printHeartbeat)
 
     while True:
-        schedule.run_pending()
-
+        # schedule.run_pending()
+        printToday(data)
+        uploadData(data)
+        printHeartbeat()
+        time.sleep(600)
 
     # printData(data)
     # uploadData(data)
