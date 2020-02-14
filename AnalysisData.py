@@ -120,12 +120,19 @@ def printToday(data):
     db = getConnection()
     cursor = db.cursor()
 
-    print("上次数据更新时间" + data['lastUpdateTime'])
+    cursor.execute('select updateTime '
+                   'from UpdateHistory '
+                   'order by updateTime desc')
+    lastTime = cursor.fetchall()[1][0]
+
+    print("数据更新时间：" + data['lastUpdateTime'])
+    print("上次数据更新时间：" + lastTime)
     print("-----------------------全国累计---------------------------")
 
     cursor.execute('select confirm '
                    'from ChinaTotalHistory '
-                   'order by updateDate')
+                   'where updateDate = %s',
+                   lastTime)
     preConfirm = cursor.fetchone()[0]
     confirm = data['chinaTotal']['confirm']
     print("确诊总数：" + str(confirm) + getDeltaXY(preConfirm, confirm))
@@ -133,7 +140,8 @@ def printToday(data):
 
     cursor.execute('select suspect '
                    'from ChinaTotalHistory '
-                   'order by updateDate')
+                   'where updateDate = %s',
+                   lastTime)
     preSuspect = cursor.fetchone()[0]
     suspect = data['chinaTotal']['suspect']
     print("疑似总数：" + str(suspect) + getDeltaXY(preSuspect, suspect))
@@ -141,7 +149,8 @@ def printToday(data):
 
     cursor.execute('select dead '
                    'from ChinaTotalHistory '
-                   'order by updateDate')
+                   'where updateDate = %s',
+                   lastTime)
     preDead = cursor.fetchone()[0]
     dead = data['chinaTotal']['dead']
     print("死亡总数：" + str(dead) + getDeltaXY(preDead, dead))
@@ -149,7 +158,8 @@ def printToday(data):
 
     cursor.execute('select heal '
                    'from ChinaTotalHistory '
-                   'order by updateDate')
+                   'where updateDate = %s',
+                   lastTime)
     preHeal = cursor.fetchone()[0]
     heal = data['chinaTotal']['heal']
     print("治愈总数：" + str(heal) + getDeltaXY(preHeal, heal))
@@ -219,11 +229,13 @@ def printToday(data):
 
     cursor.execute('select data '
                    'from WorldDailyData '
-                   'order by updateDate')
+                   'where updateDate = %s',
+                   lastTime)
     predata = json.loads(cursor.fetchone()[0], encoding='utf8')
-    # predata = predata['children']
     predata = predata[0]['children']
     currentData = data['areaTree'][0]['children']
+    # print(predata)
+    # print(currentData)
 
     for province in currentData:
         print("=================" + province['name'])
@@ -283,6 +295,10 @@ def printToday(data):
         #     print("死亡率：" + str(city['total']['deadRate']))
         #     print("治愈率：" + str(city['total']['healRate']))
 
+    print("数据更新时间：" + data['lastUpdateTime'])
+    print("上次数据更新时间：" + lastTime)
+
+
 
 def printCurrentUpdateTime(data):
 
@@ -292,7 +308,7 @@ def printCurrentUpdateTime(data):
 
 def uploadData(data):
     currentUpdateTime = data['lastUpdateTime']
-    print(currentUpdateTime)
+    # print(currentUpdateTime)
 
     db = getConnection()
 
